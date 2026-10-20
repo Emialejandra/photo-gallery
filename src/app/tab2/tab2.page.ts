@@ -1,3 +1,4 @@
+
 import { Component, inject } from '@angular/core';
 import {
   IonHeader,
@@ -10,10 +11,12 @@ import {
   IonFab,
   IonFabButton,
   IonIcon,
+  IonButton,
+  AlertController,
 } from '@ionic/angular';
 
 import { addIcons } from 'ionicons';
-import { camera } from 'ionicons/icons';
+import { camera, trash } from 'ionicons/icons';
 import { PhotoService } from '../services/photo.service';
 
 @Component({
@@ -32,16 +35,60 @@ import { PhotoService } from '../services/photo.service';
     IonFab,
     IonFabButton,
     IonIcon,
+    IonButton,
   ],
 })
 export class Tab2Page {
   public photoService = inject(PhotoService);
+  private alertController = inject(AlertController);
 
   constructor() {
-    addIcons({ camera });
+    addIcons({ camera, trash });
   }
 
-  addPhotoToGallery() {
-    this.photoService.addNewToGallery();
+  async addPhotoToGallery() {
+    try {
+      await this.photoService.addNewToGallery();
+    } catch (error) {
+      console.error('Error al tomar la fotografía:', error);
+
+      const alert = await this.alertController.create({
+        header: 'Error',
+        message: 'No se pudo tomar o guardar la fotografía.',
+        buttons: ['Aceptar'],
+      });
+
+      await alert.present();
+    }
+  }
+
+  async deletePhoto(filepath: string) {
+    const alert = await this.alertController.create({
+      header: 'Eliminar fotografía',
+      message: '¿Deseas eliminar esta fotografía de la aplicación?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Eliminar',
+          role: 'destructive',
+          handler: async () => {
+            try {
+              await this.photoService.deletePhoto(filepath);
+            } catch (error) {
+              console.error('Error al eliminar la fotografía:', error);
+            }
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  async ionViewWillEnter() {
+    await this.photoService.loadSavedPhotos();
   }
 }

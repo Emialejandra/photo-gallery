@@ -1,6 +1,7 @@
+
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title> Photo Gallery </ion-title>
+    <ion-title>Photo Gallery</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,20 +12,45 @@
     </ion-toolbar>
   </ion-header>
 
-  <!-- CHANGE: Add a grid component to display the photos. -->
   <ion-grid>
     <ion-row>
-      <!-- CHANGE: Create a new column and image element for each photo -->
-      @for (photo of photoService.photos(); track photo.filepath; let position = $index) {
-      <ion-col size="6">
-        <img [src]="photo.webviewPath" [attr.alt]="'Photo ' + (position + 1)" loading="lazy" />
-      </ion-col>
+      @for (
+        photo of photoService.photos();
+        track photo.filepath;
+        let position = $index
+      ) {
+        <ion-col size="6">
+          <img
+            [src]="photo.webviewPath"
+            [attr.alt]="'Photo ' + (position + 1)"
+            loading="lazy"
+          />
+
+          <ion-button
+            expand="block"
+            color="danger"
+            size="small"
+            (click)="deletePhoto(photo.filepath)"
+          >
+            <ion-icon name="trash" slot="start"></ion-icon>
+            Eliminar
+          </ion-button>
+        </ion-col>
+      } @empty {
+        <ion-col size="12">
+          <p class="empty-message">
+            Todavía no tienes fotografías. Pulsa el botón de la cámara para comenzar.
+          </p>
+        </ion-col>
       }
     </ion-row>
   </ion-grid>
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-    <ion-fab-button (click)="addPhotoToGallery()">
+    <ion-fab-button
+      (click)="addPhotoToGallery()"
+      aria-label="Tomar fotografía"
+    >
       <ion-icon name="camera"></ion-icon>
     </ion-fab-button>
   </ion-fab>
