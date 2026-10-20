@@ -71,3 +71,4 @@ Después, ejecuta la aplicación desde Android Studio en un dispositivo o emulad
 
 ## Evidencia del funcionamiento de la app 
 
+ 📹 https://youtube.com/shorts/XDOqjAV0fr0?feature=share 
